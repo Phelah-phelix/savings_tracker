@@ -1,0 +1,799 @@
+{% extends 'tracker/base.html' %}
+
+{% block title %}Register - Savings Tracker{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Registration Page Styles */
+    .register-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        position: relative;
+        overflow: hidden;
+        padding: 20px;
+    }
+    
+    .register-container::before {
+        content: '';
+        position: absolute;
+        width: 300%;
+        height: 300%;
+        background: radial-gradient(circle, rgba(255,255,255,0.1) 1px, transparent 1px);
+        background-size: 30px 30px;
+        animation: float 30s linear infinite;
+    }
+    
+    @keyframes float {
+        0% { transform: translate(0, 0) rotate(0deg); }
+        100% { transform: translate(-100px, -100px) rotate(360deg); }
+    }
+    
+    .register-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+        padding: 0;
+        width: 100%;
+        max-width: 500px;
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .register-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, #4e54c8, #8f94fb, #4e54c8);
+        background-size: 200% 100%;
+        animation: shimmer 3s infinite linear;
+    }
+    
+    @keyframes shimmer {
+        0% { background-position: -200% 0; }
+        100% { background-position: 200% 0; }
+    }
+    
+    .register-header {
+        background: linear-gradient(135deg, #4e54c8 0%, #8f94fb 100%);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+        border-radius: 0 0 40px 40px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .register-icon {
+        width: 80px;
+        height: 80px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        animation: bounce 2s infinite;
+    }
+    
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .register-icon i {
+        font-size: 2.5rem;
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    
+    .register-header h1 {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .register-header p {
+        opacity: 0.9;
+        font-size: 0.9rem;
+    }
+    
+    .register-body {
+        padding: 2rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+    
+    .form-group label {
+        display: flex;
+        align-items: center;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #4a5568;
+        font-size: 0.9rem;
+    }
+    
+    .form-group label i {
+        margin-right: 8px;
+        color: #4e54c8;
+    }
+    
+    .input-with-icon {
+        position: relative;
+    }
+    
+    .input-icon {
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #4e54c8;
+        font-size: 1.1rem;
+        z-index: 1;
+    }
+    
+    .form-control {
+        width: 100%;
+        padding: 14px 15px 14px 45px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+    }
+    
+    .form-control:focus {
+        outline: none;
+        border-color: #4e54c8;
+        box-shadow: 0 0 0 3px rgba(78, 84, 200, 0.1);
+        background: white;
+        transform: translateY(-1px);
+    }
+    
+    .form-control.success {
+        border-color: #48bb78;
+    }
+    
+    .form-control.error {
+        border-color: #f56565;
+        animation: shake 0.5s ease;
+    }
+    
+    @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+        20%, 40%, 60%, 80% { transform: translateX(5px); }
+    }
+    
+    .password-strength {
+        margin-top: 5px;
+        height: 5px;
+        border-radius: 2.5px;
+        background: #e2e8f0;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .strength-bar {
+        height: 100%;
+        width: 0%;
+        border-radius: 2.5px;
+        transition: width 0.3s ease;
+    }
+    
+    .strength-weak { background: #f56565; }
+    .strength-fair { background: #ed8936; }
+    .strength-good { background: #ecc94b; }
+    .strength-strong { background: #48bb78; }
+    
+    .strength-text {
+        font-size: 0.8rem;
+        margin-top: 3px;
+        text-align: right;
+    }
+    
+    .btn-register {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        margin-top: 1rem;
+    }
+    
+    .btn-register::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+        transition: 0.5s;
+    }
+    
+    .btn-register:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(78, 84, 200, 0.3);
+    }
+    
+    .btn-register:hover::before {
+        left: 100%;
+    }
+    
+    .btn-register:active {
+        transform: translateY(0);
+    }
+    
+    .register-footer {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid #e2e8f0;
+    }
+    
+    .register-footer p {
+        color: #718096;
+        margin-bottom: 0.5rem;
+    }
+    
+    .btn-login {
+        display: inline-flex;
+        align-items: center;
+        padding: 12px 30px;
+        background: white;
+        color: #4e54c8;
+        border: 2px solid #4e54c8;
+        border-radius: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        margin-top: 0.5rem;
+    }
+    
+    .btn-login:hover {
+        background: #4e54c8;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(78, 84, 200, 0.3);
+    }
+    
+    .btn-login i {
+        margin-right: 8px;
+    }
+    
+    .benefits-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .benefit-item {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        background: rgba(78, 84, 200, 0.05);
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .benefit-item:hover {
+        transform: translateY(-3px);
+        background: rgba(78, 84, 200, 0.1);
+        box-shadow: 0 5px 15px rgba(78, 84, 200, 0.1);
+    }
+    
+    .benefit-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #4e54c8, #8f94fb);
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        color: white;
+        font-size: 1rem;
+    }
+    
+    .benefit-text {
+        font-size: 0.85rem;
+        color: #4a5568;
+        font-weight: 500;
+    }
+    
+    .alert {
+        border-radius: 12px;
+        border: none;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+        animation: slideDown 0.5s ease;
+    }
+    
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    .alert-danger {
+        background: linear-gradient(135deg, #fed7d7, #feb2b2);
+        color: #742a2a;
+        box-shadow: 0 5px 15px rgba(254, 178, 178, 0.2);
+    }
+    
+    .alert-danger i {
+        margin-right: 8px;
+    }
+    
+    /* Password toggle */
+    .password-toggle {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: #718096;
+        cursor: pointer;
+        font-size: 1rem;
+        z-index: 2;
+    }
+    
+    .password-toggle:hover {
+        color: #4e54c8;
+    }
+    
+    /* Responsive */
+    @media (max-width: 768px) {
+        .register-container {
+            padding: 15px;
+        }
+        
+        .register-card {
+            max-width: 100%;
+        }
+        
+        .register-header {
+            padding: 1.5rem;
+        }
+        
+        .register-body {
+            padding: 1.5rem;
+        }
+        
+        .benefits-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+    
+    /* Success animation */
+    .success-animation {
+        display: none;
+        text-align: center;
+        padding: 2rem;
+    }
+    
+    .success-animation i {
+        font-size: 4rem;
+        color: #48bb78;
+        margin-bottom: 1rem;
+        animation: scaleIn 0.5s ease;
+    }
+    
+    @keyframes scaleIn {
+        from {
+            transform: scale(0);
+            opacity: 0;
+        }
+        to {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <div class="register-card">
+        <!-- Header -->
+        <div class="register-header">
+            <div class="register-icon">
+                <i class="fas fa-user-plus"></i>
+            </div>
+            <h1>Join Savings Tracker</h1>
+            <p>Start your journey to financial freedom today</p>
+        </div>
+        
+        <!-- Body -->
+        <div class="register-body">
+            {% if messages %}
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i>
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+            {% endif %}
+            
+            <!-- Registration Form -->
+            <form method="post" id="registerForm">
+                {% csrf_token %}
+                
+                <!-- Username Field -->
+                <div class="form-group">
+                    <label for="username">
+                        <i class="fas fa-user"></i> Username
+                    </label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user input-icon"></i>
+                        <input type="text" 
+                               class="form-control" 
+                               id="username" 
+                               name="username" 
+                               placeholder="Choose your username" 
+                               required
+                               autofocus>
+                    </div>
+                </div>
+                
+                <!-- Password Field -->
+                <div class="form-group">
+                    <label for="password1">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" 
+                               class="form-control" 
+                               id="password1" 
+                               name="password1" 
+                               placeholder="Create a strong password" 
+                               required>
+                        <button type="button" class="password-toggle" id="togglePassword1">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-bar" id="strengthBar"></div>
+                    </div>
+                    <div class="strength-text" id="strengthText"></div>
+                </div>
+                
+                <!-- Confirm Password Field -->
+                <div class="form-group">
+                    <label for="password2">
+                        <i class="fas fa-lock"></i> Confirm Password
+                    </label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock input-icon"></i>
+                        <input type="password" 
+                               class="form-control" 
+                               id="password2" 
+                               name="password2" 
+                               placeholder="Confirm your password" 
+                               required>
+                        <button type="button" class="password-toggle" id="togglePassword2">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div id="passwordMatch" class="strength-text"></div>
+                </div>
+                
+                <!-- Benefits -->
+                <div class="benefits-grid">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="benefit-text">Track Savings Progress</div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <div class="benefit-text">Set Monthly Goals</div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="benefit-text">Daily Savings Tracker</div>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <div class="benefit-text">Achieve Financial Goals</div>
+                    </div>
+                </div>
+                
+                <!-- Terms Agreement -->
+                <div class="form-check mb-4">
+                    <input class="form-check-input" type="checkbox" id="terms" required>
+                    <label class="form-check-label" for="terms">
+                        I agree to the <a href="#" class="text-primary">Terms of Service</a> and <a href="#" class="text-primary">Privacy Policy</a>
+                    </label>
+                </div>
+                
+                <!-- Register Button -->
+                <button type="submit" class="btn-register" id="registerButton">
+                    <i class="fas fa-user-plus me-2"></i> Create Account
+                </button>
+            </form>
+            
+            <!-- Success Animation (hidden by default) -->
+            <div class="success-animation" id="successAnimation">
+                <i class="fas fa-check-circle"></i>
+                <h3>Account Created Successfully!</h3>
+                <p>Redirecting to dashboard...</p>
+            </div>
+            
+            <!-- Footer -->
+            <div class="register-footer">
+                <p>Already have an account?</p>
+                <a href="{% url 'login' %}" class="btn-login">
+                    <i class="fas fa-sign-in-alt me-1"></i> Sign In Now
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Password toggle functionality
+        const togglePassword1 = document.getElementById('togglePassword1');
+        const togglePassword2 = document.getElementById('togglePassword2');
+        const password1 = document.getElementById('password1');
+        const password2 = document.getElementById('password2');
+        
+        togglePassword1.addEventListener('click', function() {
+            const type = password1.getAttribute('type') === 'password' ? 'text' : 'password';
+            password1.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+        
+        togglePassword2.addEventListener('click', function() {
+            const type = password2.getAttribute('type') === 'password' ? 'text' : 'password';
+            password2.setAttribute('type', type);
+            this.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+        
+        // Password strength checker
+        const strengthBar = document.getElementById('strengthBar');
+        const strengthText = document.getElementById('strengthText');
+        
+        password1.addEventListener('input', function() {
+            const password = this.value;
+            const strength = checkPasswordStrength(password);
+            
+            // Update strength bar
+            strengthBar.style.width = strength.percentage + '%';
+            strengthBar.className = 'strength-bar ' + strength.class;
+            
+            // Update strength text
+            strengthText.textContent = strength.text;
+            strengthText.style.color = strength.color;
+        });
+        
+        // Password match checker
+        const passwordMatch = document.getElementById('passwordMatch');
+        
+        password2.addEventListener('input', function() {
+            const p1 = password1.value;
+            const p2 = password2.value;
+            
+            if (!p2) {
+                passwordMatch.textContent = '';
+                password2.classList.remove('success', 'error');
+                return;
+            }
+            
+            if (p1 === p2) {
+                passwordMatch.textContent = '✓ Passwords match';
+                passwordMatch.style.color = '#48bb78';
+                password2.classList.remove('error');
+                password2.classList.add('success');
+            } else {
+                passwordMatch.textContent = '✗ Passwords do not match';
+                passwordMatch.style.color = '#f56565';
+                password2.classList.remove('success');
+                password2.classList.add('error');
+            }
+        });
+        
+        function checkPasswordStrength(password) {
+            let score = 0;
+            let text = '';
+            let color = '';
+            let className = '';
+            
+            // Length check
+            if (password.length >= 8) score += 1;
+            if (password.length >= 12) score += 1;
+            
+            // Character variety checks
+            if (/[a-z]/.test(password)) score += 1; // lowercase
+            if (/[A-Z]/.test(password)) score += 1; // uppercase
+            if (/[0-9]/.test(password)) score += 1; // numbers
+            if (/[^A-Za-z0-9]/.test(password)) score += 1; // special characters
+            
+            // Determine strength
+            if (score <= 2) {
+                text = 'Weak';
+                color = '#f56565';
+                className = 'strength-weak';
+            } else if (score <= 4) {
+                text = 'Fair';
+                color = '#ed8936';
+                className = 'strength-fair';
+            } else if (score <= 5) {
+                text = 'Good';
+                color = '#ecc94b';
+                className = 'strength-good';
+            } else {
+                text = 'Strong';
+                color = '#48bb78';
+                className = 'strength-strong';
+            }
+            
+            const percentage = Math.min(100, (score / 7) * 100);
+            
+            return {
+                text: text,
+                color: color,
+                class: className,
+                percentage: percentage
+            };
+        }
+        
+        // Form validation and submission
+        const registerForm = document.getElementById('registerForm');
+        const registerButton = document.getElementById('registerButton');
+        const successAnimation = document.getElementById('successAnimation');
+        
+        registerForm.addEventListener('submit', function(e) {
+            const username = document.getElementById('username').value.trim();
+            const password1 = document.getElementById('password1').value;
+            const password2 = document.getElementById('password2').value;
+            const terms = document.getElementById('terms').checked;
+            
+            // Basic validation
+            if (!username || !password1 || !password2) {
+                e.preventDefault();
+                shakeEmptyFields();
+                return false;
+            }
+            
+            if (!terms) {
+                e.preventDefault();
+                alert('Please agree to the Terms of Service and Privacy Policy.');
+                return false;
+            }
+            
+            if (password1 !== password2) {
+                e.preventDefault();
+                alert('Passwords do not match.');
+                return false;
+            }
+            
+            if (password1.length < 8) {
+                e.preventDefault();
+                alert('Password must be at least 8 characters long.');
+                return false;
+            }
+            
+            // Show loading animation
+            registerButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> Creating Account...';
+            registerButton.disabled = true;
+            
+            // Optional: Show success animation before redirect
+            // setTimeout(() => {
+            //     registerForm.style.display = 'none';
+            //     successAnimation.style.display = 'block';
+            // }, 500);
+        });
+        
+        function shakeEmptyFields() {
+            const fields = ['username', 'password1', 'password2'];
+            fields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    field.classList.add('error');
+                    setTimeout(() => field.classList.remove('error'), 500);
+                }
+            });
+        }
+        
+        // Add floating particles effect
+        createFloatingParticles();
+        
+        function createFloatingParticles() {
+            const container = document.querySelector('.register-container');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.style.cssText = `
+                    position: absolute;
+                    width: ${Math.random() * 3 + 1}px;
+                    height: ${Math.random() * 3 + 1}px;
+                    background: rgba(255,255,255,0.3);
+                    border-radius: 50%;
+                    z-index: 0;
+                    left: ${Math.random() * 100}%;
+                    top: ${Math.random() * 100}%;
+                    animation: floatParticle ${Math.random() * 10 + 10}s infinite linear;
+                `;
+                container.appendChild(particle);
+            }
+            
+            // Add CSS for animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes floatParticle {
+                    0% {
+                        transform: translateY(100vh) rotate(0deg);
+                        opacity: 0;
+                    }
+                    10% {
+                        opacity: 0.5;
+                    }
+                    90% {
+                        opacity: 0.5;
+                    }
+                    100% {
+                        transform: translateY(-100px) rotate(360deg);
+                        opacity: 0;
+                    }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+        
+        // Add focus effects
+        const inputs = document.querySelectorAll('.form-control');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.querySelector('.input-icon').style.color = '#4e54c8';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.querySelector('.input-icon').style.color = '#718096';
+            });
+        });
+        
+        // Auto-focus username field
+        document.getElementById('username').focus();
+    });
+</script>
+{% endblock %}
