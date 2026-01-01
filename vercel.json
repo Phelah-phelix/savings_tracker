@@ -1,4 +1,4 @@
-# Create vercel.json for Django
+# Create correct vercel.json
 cat > vercel.json << 'EOF'
 {
   "builds": [
@@ -10,7 +10,7 @@ cat > vercel.json << 'EOF'
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "savetracker/wsgi.py"
+      "dest": "/savetracker/wsgi.py"
     }
   ]
 }
