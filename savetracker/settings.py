@@ -1,20 +1,24 @@
+"""
+Django settings for savetracker project.
+"""
+
 import os
 from pathlib import Path
-#import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-#vercel settings
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-change-this-in-production')
+
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-your-secret-key-here')
 
-ALLOWED_HOSTS = ['savings-tracker-2ni3.onrender.com', 'localhost', '127.0.0.1']
-
-SECRET_KEY = 'django-insecure-your-secret-key-change-this-in-production'
-
-DEBUG = True
-
-ALLOWED_HOSTS = []
+# FIXED: ALL Render domains allowed
+ALLOWED_HOSTS = [
+    'savings-tracker-2ni3.onrender.com',
+    '.onrender.com',
+    'localhost',
+    '127.0.0.1',
+    '*'
+]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -86,21 +90,6 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build', 'static')
- 
- #for vercel static files
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-]
-
-# Database - Use SQLite for Vercel
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
