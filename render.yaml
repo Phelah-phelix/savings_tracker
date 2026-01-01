@@ -2,9 +2,15 @@ services:
   - type: web
     name: savings-tracker
     env: python
+    pythonVersion: 3.10.12  # Specify Python version
     plan: free
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn savetracker.wsgi:application
+    buildCommand: |
+      pip install --upgrade pip
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+    startCommand: |
+      python manage.py migrate
+      gunicorn savetracker.wsgi:application
     envVars:
       - key: DEBUG
         value: False
