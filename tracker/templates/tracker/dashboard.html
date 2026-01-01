@@ -648,7 +648,7 @@
                             <div class="goal-progress-bar" style="width: {{ goal.progress_percentage }}%"></div>
                         </div>
                         <div class="goal-stats">
-                            <span>${{ goal.total_saved|floatformat:0 }}</span>
+                            <span>Ksh{{ goal.total_saved|floatformat:0 }}</span>
                             <span>{{ goal.progress_percentage|floatformat:0 }}%</span>
                         </div>
                     </a>
@@ -733,7 +733,7 @@
                             </div>
                         </div>
                         <div class="activity-amount">
-                            ${{ saving.amount|floatformat:2 }}
+                            Ksh{{ saving.amount|floatformat:2 }}
                         </div>
                     </div>
                     {% endfor %}
@@ -879,7 +879,7 @@
             // Animate the progress circle
             setTimeout(() => {
                 circle.style.transition = 'stroke-dasharray 1.5s ease-out';
-                circle.style.strokeDasharray = `${percentage} 100`;
+                circle.style.strokeDasharray = `Ksh{percentage} 100`;
             }, 300);
         });
         

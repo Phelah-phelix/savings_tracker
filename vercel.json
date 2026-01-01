@@ -1,0 +1,16 @@
+cat > vercel.json << 'EOF'
+{
+  "builds": [
+    {
+      "src": "savetracker/wsgi.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "savetracker/wsgi.py"
+    }
+  ]
+}
+EOF

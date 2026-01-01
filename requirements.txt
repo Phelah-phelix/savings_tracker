@@ -1,2 +1,6 @@
-Django==4.2
-Pillow==10.0.0
+# Create clean requirements.txt
+cat > requirements.txt << 'EOF'
+Django==4.2.7
+Pillow==10.1.0
+django-widget-tweaks==1.5.0
+EOF
