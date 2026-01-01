@@ -1,3 +1,4 @@
+# Create vercel.json for Django
 cat > vercel.json << 'EOF'
 {
   "builds": [
