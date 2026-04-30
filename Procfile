@@ -1,0 +1,1 @@
+web: gunicorn savetracker.wsgi:application --log-file -
